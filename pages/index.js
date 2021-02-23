@@ -1,65 +1,77 @@
 import Head from 'next/head';
-import styles from '../styles/Home.module.css';
+import { useState } from 'react';
 
 export default function Home() {
+	const [password, setPassword] = useState();
+	const [email, setEmail] = useState();
+
+	const login = async event => {
+		event.preventDefault();
+
+		const response = await fetch('http://localhost:8080/login', {
+			method: 'POST',
+			body: JSON.stringify({
+				email,
+				password
+			})
+		});
+
+		if (response.status === 200) {
+			const parsedResponse = await response.json();
+
+			localStorage.setItem('@SocialGo:Token', parsedResponse);
+
+			return;
+		}
+
+		// Implementar toast de erro para login
+	};
+
 	return (
-		<div className={styles.container}>
+		<div className="w-full h-full bg-black">
 			<Head>
 				<title>Create Next App</title>
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
-			<main className={styles.main}>
-				<h1 className={styles.title}>
-					Welcome to <a href="https://nextjs.org">Next.js!</a>
-				</h1>
-
-				<p className={styles.description}>
-					Get started by editing{' '}
-					<code className={styles.code}>pages/index.js</code>
-				</p>
-
-				<div className={styles.grid}>
-					<a href="https://nextjs.org/docs" className={styles.card}>
-						<h3>Documentation &rarr;</h3>
-						<p>Find in-depth information about Next.js features and API.</p>
-					</a>
-
-					<a href="https://nextjs.org/learn" className={styles.card}>
-						<h3>Learn &rarr;</h3>
-						<p>Learn about Next.js in an interactive course with quizzes!</p>
-					</a>
-
-					<a
-						href="https://github.com/vercel/next.js/tree/master/examples"
-						className={styles.card}
-					>
-						<h3>Examples &rarr;</h3>
-						<p>Discover and deploy boilerplate example Next.js projects.</p>
-					</a>
-
-					<a
-						href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-						className={styles.card}
-					>
-						<h3>Deploy &rarr;</h3>
-						<p>
-							Instantly deploy your Next.js site to a public URL with Vercel.
+			<main className="h-full flex">
+				<div className="h-3/4 self-center w-full mx-auto bg-black rounded-xl border-4 border-white overflow-hidden px-5 py-9 md:h-2/5 md:w-1/4">
+					<div>
+						<p className="font-bold text-3xl text-center text-white mb-10">
+							Bem vindo ao Social Go
 						</p>
-					</a>
+
+						<label htmlFor="email" className="text-white font-bold">
+							Email
+						</label>
+						<input
+							type="text"
+							id="email"
+							className="w-full border-2 border-white rounded-lg px-2 py-1 bg-black mb-5 text-white"
+							placeholder="Insira seu email"
+							onChange={event => setEmail(event.target.value)}
+						/>
+						<label htmlFor="email" className="text-white font-bold">
+							Senha
+						</label>
+						<input
+							type="password"
+							id="password"
+							className="w-full border-2 border-white rounded-lg px-2 py-1 bg-black text-white"
+							placeholder="Insira sua senha"
+							onChange={event => setPassword(event.target.value)}
+						/>
+
+						<button
+							className="border-2 border-white text-white rounded-lg px-5 mt-5"
+							type="button"
+							onClick={login}
+						>
+							Entrar
+						</button>
+					</div>
 				</div>
 			</main>
-
-			<footer className={styles.footer}>
-				<a
-					href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					Powered by{' '}
-					<img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-				</a>
-			</footer>
 		</div>
 	);
 }
